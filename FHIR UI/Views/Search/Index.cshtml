@@ -1,14 +1,46 @@
-﻿@{
+﻿@using FHIR_UI.Models
+@model FHIR_UI.Models.SearchResultModel
+@{
     ViewData["Title"] = "Search";
 }
 
 <h2>Search</h2>
 
-<p>Hello</p>
+<p>Choose the type of the resource to see all resources of this type</p>
+ 
+ 
+           <h2>Search</h2>
+           <form action="~/search" method="post">
+               <fieldset>
+                   @Html.LabelFor(m=>m.Type)
+                   @Html.DropDownListFor(m => m.Type,
+                                new SelectList(Enum.GetValues(typeof(TypeName))),
+                                "Select Type")
+                   @Html.ValidationMessageFor(m=> m.Type)
+               </fieldset>
+               <input  type="submit" value="Show" />
+           </form>
+    
+    
 
-@foreach (string id in ViewBag.IdList)
-{
-    <p>@id</p>
+        @{ 
+            if(Model.Type!= null)
+            {
+                <h2>type @Model.Type</h2>
+              foreach (String r in Model.ResourceResultList)
+                {
+                 <p>@r </p> 
+                 <a href="Search/Edit/@r">Edit</a>
+                 
+                <a href="Search/Read/@r">Read</a>
+                     <p>_________________</p>   
 
-}
+                }
 
+            }
+            else
+            {
+                <p>Type is not set</p>
+
+            }
+        }
