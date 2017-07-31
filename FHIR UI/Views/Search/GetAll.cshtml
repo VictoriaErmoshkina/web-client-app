@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Resource List";
+}
+
+<h2>My Resource List</h2>
+
+<p>Bundle contains @ViewBag.Amount entries </p>
+@foreach (string str in ViewBag.ResultList)
+{
+    <p>@str</p>
+}
