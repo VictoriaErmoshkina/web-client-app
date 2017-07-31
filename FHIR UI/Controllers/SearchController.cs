@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FHIR_UI.Models;
 using Hl7.Fhir.Model;
+using Hl7.Fhir.Rest;
+using Hl7.Fhir.Serialization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -34,24 +36,6 @@ namespace FHIR_UI.Controllers
             return View(m);
         }
 
-        public IActionResult GetAll(string type)
-        {
-            ResourceRepository repo = new ResourceRepository();
-            repo.Type = type;
-            List <String> list = repo.GetAll();
-            ViewBag.ResourceList = list;
-            ViewBag.Amount = list.Count;
-
-                //SearchResultModel resource = new SearchResultModel();
-                //List<String> result = resource.GetAll(type);
-                //ViewBag.Amount = result.First();
-                //result.RemoveAt(0);
-                //ViewBag.ResultList = result;   
-                return View();
-        }
-
-
-
         /// <summary>
         /// ищет ресурс по заданному id, выводит JSON 
         /// </summary>
@@ -60,12 +44,28 @@ namespace FHIR_UI.Controllers
         /// <param name="version"></param>
         /// <returns></returns>
 
-        public IActionResult GetJSON (string type, string id, string version = null)
+        public IActionResult Read (string type, string id, string version = null)
         {
-            
+          
             SearchResultModel resource = new SearchResultModel();
-            ViewBag.JSONText = resource.GetResource(type, id, version);
-            return View();
+            // ViewBag.JSONText = resource.GetResource(type, id, version);
+            FhirClient client = new FhirClient(new Uri("https://fhirtest.uhn.ca/baseDstu3"));
+            String text = FhirSerializer.SerializeResourceToJson(client.Get(ResourceIdentity.Build(type, id, version)));
+            JsonTextModel m = new JsonTextModel();
+            m.Text = text;
+            return View(m);
+        }
+
+        public IActionResult Edit(string type, string id, string version = null)
+        {
+
+            SearchResultModel resource = new SearchResultModel();
+            // ViewBag.JSONText = resource.GetResource(type, id, version);
+            FhirClient client = new FhirClient(new Uri("https://fhirtest.uhn.ca/baseDstu3"));
+            String text = FhirSerializer.SerializeResourceToJson(client.Get(ResourceIdentity.Build(type, id, version)));
+            JsonTextModel m = new JsonTextModel();
+            m.Text = text;
+            return View(m);
         }
     }
 }

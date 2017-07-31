@@ -9,7 +9,6 @@
 <p>Choose the type of the resource to see all resources of this type</p>
  
  
-           <h2>Search</h2>
            <form action="~/search" method="post">
                <fieldset>
                    @Html.LabelFor(m=>m.Type)
@@ -21,26 +20,32 @@
                <input  type="submit" value="Show" />
            </form>
     
+
     
-
-        @{ 
-            if(Model.Type!= null)
-            {
-                <h2>type @Model.Type</h2>
-              foreach (String r in Model.ResourceResultList)
+<body>
+    @{
+        if (Model.Type != null)
+        {
+            <h2>type @Model.Type</h2>
+            <table border="1">
+                <tr>
+                    <th>ID</th>
+                    <th>Action</th>
+                </tr>
+                @foreach (String r in Model.ResourceResultList)
                 {
-                 <p>@r </p> 
-                 <a href="Search/Edit/@r">Edit</a>
-                 
-                <a href="Search/Read/@r">Read</a>
-                     <p>_________________</p>   
-
+                    <tr>
+                     <th> <p>@r </p> </th>
+                     <th>
+                         <a href="Search/Read?type=@Model.Type&id=@r">Read</a>
+                         <a href="Search/Edit?type=@Model.Type&id=@r">Edit</a>
+                     </th>
+                    </tr>
                 }
-
-            }
-            else
-            {
-                <p>Type is not set</p>
-
-            }
+            </table>
+        }else
+        {
+           <p>Type is not set</p>
         }
+     }
+</body>
