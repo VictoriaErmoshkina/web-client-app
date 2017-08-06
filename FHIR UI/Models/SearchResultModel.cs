@@ -10,7 +10,7 @@ namespace FHIR_UI.Models
     public class SearchResultModel
     {
         #region Properties
-        [Required(ErrorMessage = "Please, Enter type of resource")]
+       // [Required(ErrorMessage = "Please, Enter type of resource")]
         public String Type { get; set; }
         public int _amount { get; set; }
 
@@ -22,7 +22,7 @@ namespace FHIR_UI.Models
         public int currentAmount { get; internal set; }
        public int pagesAmount { get; set; }
 
-        public  String [] pages;
+        public  String [] result;
 
         public SearchResultModel(string type)
         {
@@ -32,6 +32,14 @@ namespace FHIR_UI.Models
         {
           
         }
+
+        public ResourceType rt;
+
+        public void grt()
+        {
+            Array valuesAsArray = Enum.GetValues(typeof(ResourceType));
+
+        }
         public void getResultOnPage( int amountOnPage, int CurrentPage)
         {
             this.currentPage = CurrentPage;
@@ -40,9 +48,9 @@ namespace FHIR_UI.Models
                 currentAmount = _amount - amountOnPage * (currentPage - 1);
             else currentAmount = amountOnPage;
 
-            pages = new String[currentAmount];
+            result = new String[currentAmount];
             var firstIndex = amountOnPage * (currentPage - 1);
-            ResourceResultList.CopyTo(firstIndex, pages, 0, currentAmount);
+            ResourceResultList.CopyTo(firstIndex, result, 0, currentAmount);
            
         }
     }

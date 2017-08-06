@@ -15,6 +15,7 @@ namespace FHIR_UI.Models
         public ResourceRepository(string url)       
         {
             _client = new FhirClient(new Uri(url));
+            
         }
 
 

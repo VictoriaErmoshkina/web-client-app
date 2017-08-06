@@ -3,8 +3,23 @@
 @{
     ViewData["Title"] = "Woohoo";
 }
-
 <h2>Search</h2>
+
+
+<p>Choose the type of the resource to see all resources of this type</p>
+
+
+<form action="~/search" method="post">
+    <fieldset>
+        @Html.LabelFor(m => m.Type)
+        @Html.DropDownListFor(m => m.Type,
+                                new SelectList(Enum.GetValues(typeof(TypeName))),
+                                "Select Type")
+        @Html.ValidationMessageFor(m => m.Type)
+    </fieldset>
+    <input type="submit" value="Show" />
+</form>
+
 
 
 
@@ -33,8 +48,8 @@
                         <th>ID</th>
                         <th>Action</th>
                     </tr>
-                    @foreach (String r in Model.pages)
-                {
+                    @foreach (String r in Model.result)
+                    {
                         <tr>
                             <th> <p>@r </p> </th>
                             <th>

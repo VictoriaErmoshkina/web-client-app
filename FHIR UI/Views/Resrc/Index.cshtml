@@ -11,11 +11,11 @@
 <h2>
     Search
 </h2>
-<body>
+<body >
     <center>
         <table width="1000px">
             <tr>
-                <td colspan="2" title="setType">
+                <td colspan="2"  title="setType">
                     <p>Choose the type of the resource to see all resources of this type</p>
 
 
@@ -37,7 +37,7 @@
                     @foreach (var v in Model.Types.TypesAsArray)
                     {
                         <p> <a href="Search?type=@v.ToString()">* @v.ToString()</a> </p>
-                    }
+                     }
                 </td>
                 <td bgcolor="#F8FEFE" valign="top">
 
@@ -46,36 +46,36 @@
                         {
                             <a href="Search/Woohoo?type=@Model.SearchRes.Type&page=@(i+1)">@(i + 1)</a>
                         }
-                    </form>
-                    @{
+</form>
+                        @{
 
-                    if (Model.SearchRes.Type != null)
-                    {
-                    <h2>type @Model.SearchRes.Type</h2>
-                    <p> Found @Model.SearchRes._amount items</p>
-                    <table border="1">
-                        <tr>
-                            <th>ID</th>
-                            <th>Action</th>
-                        </tr>
-                        @foreach (String r in Model.SearchRes.result)
+                        }if (Model.SearchRes.Type != null)
                         {
+                        <h2>type @Model.SearchRes.Type</h2>
+                        <p> Found @Model.SearchRes._amount items</p>
+                        <table border="1">
                             <tr>
-                                <th> <p>@r </p> </th>
-                                <th>
-                                    <a href="Search/Read?type=@Model.SearchRes.Type&id=@r">Read</a>
-                                    <a href="Search/Edit?type=@Model.SearchRes.Type&id=@r">Edit</a>
-                                </th>
+                                <th>ID</th>
+                                <th>Action</th>
                             </tr>
+                            @foreach (String r in Model.SearchRes.result)
+                            {
+                                <tr>
+                                    <th> <p>@r </p> </th>
+                                    <th>
+                                        <a href="Search/Read?type=@Model.SearchRes.Type&id=@r">Read</a>
+                                        <a href="Search/Edit?type=@Model.SearchRes.Type&id=@r">Edit</a>
+                                    </th>
+                                </tr>
+                            }
+                        </table>
                         }
-                    </table>
-                    }
-                    else
-                    {
-                    <p>Type is not set</p>
-                    }
-                    }
-                </td>
+                        else
+                        {
+                        <p>Type is not set</p>
+                        }
+                        }
+</td>
             </tr>
         </table>
     </center>

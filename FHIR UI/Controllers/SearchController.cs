@@ -16,44 +16,53 @@ namespace FHIR_UI.Controllers
         //переделать в конфиг
         public String url = "https://fhirtest.uhn.ca/baseDstu3";
         int amountOnPage = 20;
+
+
         [HttpGet]
-        //public IActionResult Index()
-        //{
-        //    ResourceRepository repo = new ResourceRepository(url);
-        //    SearchResultModel m = new SearchResultModel();
-        //    m.ResourceResultList = repo.GetIds(m.Type);
-        //    return View(m);
-        //}
-
-        [HttpPost]
-        public IActionResult Index(SearchResultModel m)
+        public IActionResult Index(String type = null, int page = 1)
         {
-            if (m.currentPage == 0) { m.currentPage = 1; };
-            if (ModelState.IsValid)
-            {
-                ResourceRepository rep = new ResourceRepository(url);
-                m.ResourceResultList = rep.GetIds(m.Type);
-                m._amount = m.ResourceResultList.Count();
-                m.pagesAmount = (int)Math.Ceiling((double)m._amount/amountOnPage );
-                m.getResultOnPage( amountOnPage, m.currentPage);
-
-                //ResourceRepository rep = new ResourceRepository(url);
-                //m.bundle = rep.GetBundles(m.Type);
-                //m._amount = m.bundle.Entry.Count;
-            }
+            ResourceRepository repo = new ResourceRepository(url);
+            SearchResultModel resultModel = new SearchResultModel();
+            resultModel.ResourceResultList = repo.GetIds(resultModel.Type);
+            ResourceTypesModel resTypes = new ResourceTypesModel();
+            CommonViewModel m = new CommonViewModel(resTypes, resultModel); 
             return View(m);
         }
 
+        [HttpPost]
+        public IActionResult Index(SearchResultModel resultModel)
+        {
+            if (resultModel.currentPage == 0) { resultModel.currentPage = 1; };
+            if (ModelState.IsValid)
+            {
+                ResourceRepository rep = new ResourceRepository(url);
+                resultModel.ResourceResultList = rep.GetIds(resultModel.Type);
+                resultModel._amount = resultModel.ResourceResultList.Count();
+                resultModel.pagesAmount = (int)Math.Ceiling((double)resultModel._amount/amountOnPage );
+                resultModel.getResultOnPage( amountOnPage, resultModel.currentPage);
+            }
+
+            ResourceTypesModel resTypes = new ResourceTypesModel();
+            CommonViewModel m = new CommonViewModel(resTypes, resultModel);
+
+            return View(m);
+        }
+
+        [HttpGet]
         public IActionResult Woohoo(String type=null, int page=1)
         {
-                ResourceRepository rep = new ResourceRepository(url);
-            SearchResultModel m = new SearchResultModel(type);
-            m.Type = type;
-            m.ResourceResultList = rep.GetIds(m.Type);
-                m._amount = m.ResourceResultList.Count();
-                m.pagesAmount = (int)Math.Ceiling((double)m._amount / amountOnPage);
-            m.currentPage = page;
-                m.getResultOnPage(amountOnPage, m.currentPage);
+            ResourceRepository rep = new ResourceRepository(url);
+            SearchResultModel resultModel = new SearchResultModel(type);
+            resultModel.Type = type;
+            resultModel.ResourceResultList = rep.GetIds(resultModel.Type);
+            resultModel._amount = resultModel.ResourceResultList.Count();
+            resultModel.pagesAmount = (int)Math.Ceiling((double)resultModel._amount / amountOnPage);
+            resultModel.currentPage = page;
+            resultModel.getResultOnPage(amountOnPage, resultModel.currentPage);
+
+            ResourceTypesModel resTypes = new ResourceTypesModel();
+            CommonViewModel m = new CommonViewModel(resTypes, resultModel);
+
             
             return View(m);
         }
