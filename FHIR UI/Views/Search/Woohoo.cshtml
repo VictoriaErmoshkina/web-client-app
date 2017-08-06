@@ -1,44 +1,32 @@
 ﻿@using FHIR_UI.Models
 @model FHIR_UI.Models.SearchResultModel
 @{
-    ViewData["Title"] = "Search";
+    ViewData["Title"] = "Woohoo";
 }
 
 <h2>Search</h2>
 
 
-<p>Choose the type of the resource to see all resources of this type</p>
- 
- 
-           <form action="~/search" method="post">
-               <fieldset>
-                   @Html.LabelFor(m=>m.Type)
-                   @Html.DropDownListFor(m => m.Type,
-                                new SelectList(Enum.GetValues(typeof(TypeName))),
-                                "Select Type")
-                   @Html.ValidationMessageFor(m=> m.Type)
-               </fieldset>
-               <input  type="submit" value="Show" />
-           </form>
 
-    <script>
+<script>
         function isEmail(int s) {
        s++;
           @Model.currentPage =s;
    }
-    </script>
+</script>
 
 <form action="~/search" method="get">
     @for (int i = 0; i < Model.pagesAmount; ++i)
     {
-        <a href="Search/Woohoo?type=@Model.Type&page=@(i+1)">@(i+1)</a>
+        <a href="Search/Woohoo?type=@Model.Type&page=@(i+1)">@(i + 1)</a>
+
     }
 </form>
-    <body>
-        @{
-            if (Model.Type != null)
-            {
-                <h2>type @Model.Type</h2>
+<body>
+    @{
+        if (Model.Type != null)
+        {
+            <h2>type @Model.Type</h2>
                 <p> Found @Model._amount items</p>
                 <table border="1">
                     <tr>
@@ -58,10 +46,10 @@
                 </table>
                 <a href="Search/Next">Next</a>
                 <a href="Search/Previous">Previous</a>
-            }
-            else
-            {
-                <p>Type is not set</p>
-            }
         }
-    </body>
+        else
+        {
+            <p>Type is not set</p>
+        }
+    }
+</body>

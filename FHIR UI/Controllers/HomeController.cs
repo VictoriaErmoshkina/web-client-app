@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using FHIR_UI.Models;
 
 namespace FHIR_UI.Controllers
 {
     public class HomeController : Controller
     {
+        public String url = "https://fhirtest.uhn.ca/baseDstu3";
         public IActionResult Index()
         {
+            
             return View();
         }
 
@@ -31,5 +34,7 @@ namespace FHIR_UI.Controllers
         {
             return View();
         }
+
+        
     }
 }

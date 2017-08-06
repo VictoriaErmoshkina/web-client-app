@@ -5,35 +5,49 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
+
 namespace FHIR_UI.Models
 {
     public class ResourceRepository
     {
-        FhirClient client = new FhirClient(new Uri("https://fhirtest.uhn.ca/baseDstu3"));
+        private readonly FhirClient _client;
 
-   //     [Required(ErrorMessage = "Please, Enter type of resource")]
-        public String Type { get; set; }
-
-
-        public List<String> GetAll()
+        public ResourceRepository(string url)       
         {
-            
-            List < String > ResourceList = new List<String>();
-            if (Type != null)
+            _client = new FhirClient(new Uri(url));
+        }
+
+
+        public List<String> GetIds(string type)
+        {
+            List<String> result = new List<String>();
+            if (string.IsNullOrWhiteSpace(type))
+                return result;
+            var bundle = _client.Search(type);
+            while (bundle!= null)
             {
-                var bundle = client.Search(Type);
-                client.ReturnFullResource = true;
                 foreach (var entry in bundle.Entry)
                 {
-                    var p = entry.Resource;
-                    ResourceList.Add(p.Id);
-                    bundle.GetResources();
+                    result.Add(entry.Resource.Id);
                 }
+                bundle = _client.Continue(bundle);
             }
-            return ResourceList;
+            return result;
+        }
+
+        public Bundle GetBundles(string type)
+        {
+            List<String> result = new List<String>();
+            if (string.IsNullOrWhiteSpace(type))
+                return null;
+            return _client.Search(type);
+        }
+
+        public Bundle NextBundles( Bundle bundle)
+        {
+            return _client.Continue(bundle);
         }
     }
-
 
     /// <summary>
     ///     //TODO: Как получить список типов ресурсов? Ну а пока в ручную(((
@@ -50,6 +64,8 @@ namespace FHIR_UI.Models
         Sequence,
         DiagnosticReport,
         CarePlan,
-        MedicationDispense
+        MedicationDispense,
+        ChargeItem,
+        Coverage
     }
 }
