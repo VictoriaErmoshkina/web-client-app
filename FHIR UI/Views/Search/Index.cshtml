@@ -8,54 +8,50 @@
 <head>
     <title>тестик</title>
 </head>
-<h2>
-    Search
-</h2>
 <body>
+    <h2>Search</h2>
     <center>
         <table width="1000px">
             <tr height="500px">
                 <td bgcolor="#EFEEFF" width="20px" valign="top">
-                    @foreach (var v in Model.Types.TypesAsArray)
+                    @foreach (var v in Model.typesModel_.TypesAsArray_)
                     {
-                        <p> <a href="Search?type=@v.ToString()">* @v.ToString()</a> </p>
+                                                <p> <a href = "Search?type=@v.ToString()"> *@v.ToString() </a> </p>
                     }
                 </td>
                 <td bgcolor="#F8FEFE" valign="top">
-
                     <form action="~/search" method="get">
-                        @for (int i = 0; i < Model.SearchRes.pagesAmount; ++i)
+                        @for (int i = 0; i < Model.searchModel_.pagesAmount_; ++i)
                         {
-                            <a href="Search?type=@Model.SearchRes.Type&page=@(i+1)">@(i + 1)</a>
+                                                        <a href = "Search?type=@Model.searchModel_.typeOfResource_&page=@(i + 1)" >@(i + 1) </a>
                         }
                     </form>
                     @{
-
-                    if (Model.SearchRes.Type != null)
-                    {
-                    <h2>type @Model.SearchRes.Type</h2>
-                    <p> Found @Model.SearchRes._amount items</p>
-                    <table border="1">
-                        <tr>
-                            <th>ID</th>
-                            <th>Action</th>
-                        </tr>
-                        @foreach (String r in Model.SearchRes.result)
+                        if (Model.searchModel_.typeOfResource_ != null)
                         {
-                            <tr>
-                                <th> <p>@r </p> </th>
-                                <th>
-                                    <a href="Search/Read?type=@Model.SearchRes.Type&id=@r">Read</a>
-                                    <a href="Search/Edit?type=@Model.SearchRes.Type&id=@r">Edit</a>
-                                </th>
-                            </tr>
+                                                <h2> type @Model.searchModel_.typeOfResource_ </h2>
+                                                   <p> Found @Model.searchModel_.totalAmountOfItems_ items</p>
+                                                <table border = "1" >
+                                                <tr>
+                                                <th> ID </th >
+                                                <th> Action </th >
+                                                </tr>
+                                                @foreach (String r in Model.searchModel_.resultOnPage_)
+                                                {
+                                                    <tr>
+                                                    <th> <p> @r </p> </th>
+                                                    <th>
+                                                    <a href = "Search/Read?type=@Model.searchModel_.typeOfResource_&id=@r" > Read </a>
+                                                    <a href = "Search/Edit?type=@Model.searchModel_.typeOfResource_&id=@r" > Edit </a>
+                                                    </th>
+                                                    </tr>
+                                                }
+                                                </table>
                         }
-                    </table>
-                    }
-                    else
-                    {
-                    <p>Type is not set</p>
-                    }
+                        else
+                        {
+                                                <p> Type is not set </p>
+                        }
                     }
                 </td>
             </tr>
@@ -63,4 +59,3 @@
     </center>
 </body>
 </html>
-

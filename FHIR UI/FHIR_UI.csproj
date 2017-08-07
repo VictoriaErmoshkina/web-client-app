@@ -11,10 +11,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Debug\netcoreapp1.1\FHIR_UI.xml</DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="Views\Resrc\Create.cshtml" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Hl7.Fhir.STU3" Version="0.93.4" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />

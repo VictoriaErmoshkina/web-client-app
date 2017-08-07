@@ -23,15 +23,14 @@ namespace FHIR_UI.Controllers
         {
             ResourceRepository repo = new ResourceRepository(url);
             SearchResultModel resultModel = new SearchResultModel();
-            resultModel.Type = type;
-            resultModel.ResourceResultList = repo.GetIds(resultModel.Type);
-
-            
-            resultModel._amount = resultModel.ResourceResultList.Count();
-            resultModel.pagesAmount = (int)Math.Ceiling((double)resultModel._amount / amountOnPage);
-            resultModel.currentPage = page;
-            if (resultModel._amount >0)
-                resultModel.getResultOnPage(amountOnPage, resultModel.currentPage);
+            resultModel.typeOfResource_ = type;
+            resultModel.totalResult_ = repo.FilteredGetIds(resultModel.typeOfResource_);
+                        
+            resultModel.totalAmountOfItems_ = resultModel.totalResult_.Count();
+            resultModel.pagesAmount_ = (int)Math.Ceiling((double)resultModel.totalAmountOfItems_ / amountOnPage);
+            resultModel.currentPage_ = page;
+            if (resultModel.totalAmountOfItems_ >0)
+                resultModel.SetResultOnPage(amountOnPage, resultModel.currentPage_);
 
             ResourceTypesModel resTypes = new ResourceTypesModel();
             CommonViewModel m = new CommonViewModel(resTypes, resultModel); 
@@ -41,14 +40,14 @@ namespace FHIR_UI.Controllers
         [HttpPost]
         public IActionResult Index(CommonViewModel m)
         {
-            if (m.SearchRes.currentPage == 0) { m.SearchRes.currentPage = 1; };
+            if (m.searchModel_.currentPage_ == 0) { m.searchModel_.currentPage_ = 1; };
             if (ModelState.IsValid)
             {
                 ResourceRepository rep = new ResourceRepository(url);
-                m.SearchRes.ResourceResultList = rep.GetIds(m.SearchRes.Type);
-                m.SearchRes._amount = m.SearchRes.ResourceResultList.Count();
-                m.SearchRes.pagesAmount = (int)Math.Ceiling((double)m.SearchRes._amount/amountOnPage );
-                m.SearchRes.getResultOnPage( amountOnPage, m.SearchRes.currentPage);
+                m.searchModel_.totalResult_ = rep.FilteredGetIds(m.searchModel_.typeOfResource_);
+                m.searchModel_.totalAmountOfItems_ = m.searchModel_.totalResult_.Count();
+                m.searchModel_.pagesAmount_ = (int)Math.Ceiling((double)m.searchModel_.totalAmountOfItems_/amountOnPage );
+                m.searchModel_.SetResultOnPage( amountOnPage, m.searchModel_.currentPage_);
             }
 
            
@@ -57,32 +56,12 @@ namespace FHIR_UI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Woohoo(String type=null, int page=1)
-        {
-            ResourceRepository rep = new ResourceRepository(url);
-            SearchResultModel resultModel = new SearchResultModel(type);
-            resultModel.Type = type;
-            resultModel.ResourceResultList = rep.GetIds(resultModel.Type);
-            resultModel._amount = resultModel.ResourceResultList.Count();
-            resultModel.pagesAmount = (int)Math.Ceiling((double)resultModel._amount / amountOnPage);
-            resultModel.currentPage = page;
-            resultModel.getResultOnPage(amountOnPage, resultModel.currentPage);
-
-            ResourceTypesModel resTypes = new ResourceTypesModel();
-            CommonViewModel m = new CommonViewModel(resTypes, resultModel);
-
-            
-            return View(m);
-        }
-
-
-        [HttpGet]
         public IActionResult Read (string type, string id, string version = null)
         {          
             FhirClient client = new FhirClient(url);
             String text = FhirSerializer.SerializeResourceToJson(client.Get(ResourceIdentity.Build(type, id, version)));
             JsonTextModel m = new JsonTextModel();
-            m.Text = text;
+            m.JsonText_ = text;
             return View(m);
         }
 
@@ -92,7 +71,7 @@ namespace FHIR_UI.Controllers
             FhirClient client = new FhirClient(url);
             String text = FhirSerializer.SerializeResourceToJson(client.Get(ResourceIdentity.Build(type, id, version)));
             JsonTextModel m = new JsonTextModel();
-            m.Text = text;
+            m.JsonText_ = text;
             return View(m);
         }
     }

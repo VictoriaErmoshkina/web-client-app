@@ -1,21 +1,17 @@
-﻿@using FHIR_UI.Models
+﻿﻿@using FHIR_UI.Models
 @model FHIR_UI.Models.JsonTextModel
 @{
     ViewData["Title"] = "Json";
 }
-
 <h2>JSON file</h2>
-
-
 <body>
     <div>
         @{
             <form action="textarea1.php" method="post">
                 <p><b>Edit JSON file here:</b></p>
-                <textarea rows="30" cols="100">@Model.Text</textarea>
-                <p ><input type="submit" value="Save"></p>
+                <textarea rows="30" cols="100">@Model.JsonText_</textarea>
+                <p><input type="submit" value="Save"></p>
             </form>
         }
     </div>
-    
 </body>

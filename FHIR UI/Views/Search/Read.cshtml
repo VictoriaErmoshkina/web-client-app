@@ -1,21 +1,18 @@
-﻿@using FHIR_UI.Models
+﻿﻿@using FHIR_UI.Models
 @model FHIR_UI.Models.JsonTextModel
 @{
     ViewData["Title"] = "Json";
 }
-
 <h2>JSON file</h2>
-
-
 <body>
     @{
-        if (Model.Text != null)
+        if (Model.JsonText_ != null)
         {
-            <p>@Model.Text</p>
+             <p> @Model.JsonText_ </p>
         }
         else
         {
-            <p>JSON file is empty</p>
+             <p> JSON file is empty </p>
         }
     }
 </body>

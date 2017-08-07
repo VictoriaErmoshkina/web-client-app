@@ -10,48 +10,37 @@ namespace FHIR_UI.Models
     public class SearchResultModel
     {
         #region Properties
-       // [Required(ErrorMessage = "Please, Enter type of resource")]
-        public String Type { get; set; }
-        public int _amount { get; set; }
-
-        public List<String> ResourceResultList { get; set; }
+        public String typeOfResource_ { get; set; }
+        public int totalAmountOfItems_ { get; set; }
+        public int currentPage_ { get; internal set; }
+        public int currentAmountOfItems_ { get; internal set; }
+        public int pagesAmount_ { get; set; }
+        public String[] resultOnPage_;
+        public List<String> totalResult_ { get; set; }
         #endregion
 
-        public int currentPage { get; internal set; }
-
-        public int currentAmount { get; internal set; }
-       public int pagesAmount { get; set; }
-
-        public  String [] result;
-
+        public SearchResultModel() { }
         public SearchResultModel(string type)
         {
-            Type = type;
-        }
-        public SearchResultModel()
-        {
-          
+            typeOfResource_ = type;
         }
 
-        public ResourceType rt;
-
-        public void grt()
+       /// <summary>
+       /// Sets result for certain page
+       /// </summary>
+       /// <param name="amountOnPage">max amount of items on each page</param>
+       /// <param name="CurrentPage">number of page</param>
+        public void SetResultOnPage( int amountOnPage, int CurrentPage)
         {
-            Array valuesAsArray = Enum.GetValues(typeof(ResourceType));
+            this.currentPage_ = CurrentPage;
+            if (amountOnPage > totalAmountOfItems_ - amountOnPage * (currentPage_-1) 
+                & totalAmountOfItems_ - amountOnPage * (currentPage_ - 1) !=0)
+                currentAmountOfItems_ = totalAmountOfItems_ - amountOnPage * (currentPage_ - 1);
+            else currentAmountOfItems_ = amountOnPage;
 
-        }
-        public void getResultOnPage( int amountOnPage, int CurrentPage)
-        {
-            this.currentPage = CurrentPage;
-            if (amountOnPage > _amount - amountOnPage * (currentPage-1) 
-                & _amount - amountOnPage * (currentPage - 1) !=0)
-                currentAmount = _amount - amountOnPage * (currentPage - 1);
-            else currentAmount = amountOnPage;
-
-            result = new String[currentAmount];
-            var firstIndex = amountOnPage * (currentPage - 1);
-            ResourceResultList.CopyTo(firstIndex, result, 0, currentAmount);
-           
+            resultOnPage_ = new String[currentAmountOfItems_];
+            var firstIndex = amountOnPage * (currentPage_ - 1);
+            totalResult_.CopyTo(firstIndex, resultOnPage_, 0, currentAmountOfItems_);
         }
     }
 

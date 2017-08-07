@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 
 namespace FHIR_UI.Models
 {
+    /// <summary>
+    /// Contains text of JSON resource
+    /// </summary>
     public class JsonTextModel
     {
-        public String Text { get; set; }
+        public String JsonText_ { get; set; }
     }
 }

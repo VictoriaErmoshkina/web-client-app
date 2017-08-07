@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace FHIR_UI.Models
 {
+    /// <summary>
+    /// contains properties of FHIR types
+    /// </summary>
     public class ResourceTypesModel
     {
-        ImplementationGuide ig = new ImplementationGuide();
-        public Array TypesAsArray { get; set; }
+
+        public readonly Array TypesAsArray_;
 
        public ResourceTypesModel()
         {
-            TypesAsArray = Enum.GetValues(typeof(ResourceType));
+            TypesAsArray_ = Enum.GetValues(typeof(ResourceType));
         }
     }
 }
