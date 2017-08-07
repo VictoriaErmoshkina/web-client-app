@@ -10,16 +10,16 @@ namespace FHIR_UI.Models
     /// Поэтому пока что костыль
     /// Но его надо убирать, потому что сейчас каждый раз при подгрузке поиска ResourceTypesModel создается заново
     /// </summary>
-    //TODO: передать ResourceTypesModel в LayOut_
+    //TODO: нужно передать ResourceTypesModel в LayOut_
     public class CommonViewModel
     {
         public ResourceTypesModel typesModel_ { get; set; }
         public SearchResultModel searchModel_ { get; set; }
 
-       public CommonViewModel (ResourceTypesModel r, SearchResultModel s)
+       public CommonViewModel (ResourceTypesModel rtm, SearchResultModel srm)
         {
-            typesModel_ = r;
-            searchModel_ = s;
+            typesModel_ = rtm;
+            searchModel_ = srm;
         }
 
         public CommonViewModel()

@@ -4,12 +4,13 @@
     ViewData["Title"] = "Json";
 }
 <h2>JSON file</h2>
+
 <body>
     <div>
         @{
             <form action="textarea1.php" method="post">
                 <p><b>Edit JSON file here:</b></p>
-                <textarea rows="30" cols="100">@Model.JsonText_</textarea>
+                <textarea rows="30" cols="100">@Model.jsonText_</textarea>
                 <p><input type="submit" value="Save"></p>
             </form>
         }

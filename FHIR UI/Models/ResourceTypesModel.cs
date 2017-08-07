@@ -12,11 +12,11 @@ namespace FHIR_UI.Models
     public class ResourceTypesModel
     {
 
-        public readonly Array TypesAsArray_;
+        public readonly Array typesAsArray_;
 
        public ResourceTypesModel()
         {
-            TypesAsArray_ = Enum.GetValues(typeof(ResourceType));
+            typesAsArray_ = Enum.GetValues(typeof(ResourceType));
         }
     }
 }

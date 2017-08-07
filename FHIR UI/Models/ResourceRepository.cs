@@ -21,8 +21,7 @@ namespace FHIR_UI.Models
         /// <param name="url">url of Server</param>
         public ResourceRepository(string url)       
         {
-            _client = new FhirClient(new Uri(url));
-            
+            _client = new FhirClient(new Uri(url));            
         }
 
 
@@ -50,11 +49,7 @@ namespace FHIR_UI.Models
                 }
                 bundle = _client.Continue(bundle);
             }
-
             return result;
         }
-
-    }
-
-    
+    }    
 }

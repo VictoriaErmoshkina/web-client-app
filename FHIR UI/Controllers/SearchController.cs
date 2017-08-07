@@ -28,9 +28,9 @@ namespace FHIR_UI.Controllers
                         
             resultModel.totalAmountOfItems_ = resultModel.totalResult_.Count();
             resultModel.pagesAmount_ = (int)Math.Ceiling((double)resultModel.totalAmountOfItems_ / amountOnPage);
-            resultModel.currentPage_ = page;
+            resultModel.currentPageNumb_ = page;
             if (resultModel.totalAmountOfItems_ >0)
-                resultModel.SetResultOnPage(amountOnPage, resultModel.currentPage_);
+                resultModel.SetResultOnPage(amountOnPage, resultModel.currentPageNumb_);
 
             ResourceTypesModel resTypes = new ResourceTypesModel();
             CommonViewModel m = new CommonViewModel(resTypes, resultModel); 
@@ -40,14 +40,14 @@ namespace FHIR_UI.Controllers
         [HttpPost]
         public IActionResult Index(CommonViewModel m)
         {
-            if (m.searchModel_.currentPage_ == 0) { m.searchModel_.currentPage_ = 1; };
+            if (m.searchModel_.currentPageNumb_ == 0) { m.searchModel_.currentPageNumb_ = 1; };
             if (ModelState.IsValid)
             {
                 ResourceRepository rep = new ResourceRepository(url);
                 m.searchModel_.totalResult_ = rep.FilteredGetIds(m.searchModel_.typeOfResource_);
                 m.searchModel_.totalAmountOfItems_ = m.searchModel_.totalResult_.Count();
                 m.searchModel_.pagesAmount_ = (int)Math.Ceiling((double)m.searchModel_.totalAmountOfItems_/amountOnPage );
-                m.searchModel_.SetResultOnPage( amountOnPage, m.searchModel_.currentPage_);
+                m.searchModel_.SetResultOnPage( amountOnPage, m.searchModel_.currentPageNumb_);
             }
 
            
@@ -61,7 +61,7 @@ namespace FHIR_UI.Controllers
             FhirClient client = new FhirClient(url);
             String text = FhirSerializer.SerializeResourceToJson(client.Get(ResourceIdentity.Build(type, id, version)));
             JsonTextModel m = new JsonTextModel();
-            m.JsonText_ = text;
+            m.jsonText_ = text;
             return View(m);
         }
 
@@ -71,7 +71,7 @@ namespace FHIR_UI.Controllers
             FhirClient client = new FhirClient(url);
             String text = FhirSerializer.SerializeResourceToJson(client.Get(ResourceIdentity.Build(type, id, version)));
             JsonTextModel m = new JsonTextModel();
-            m.JsonText_ = text;
+            m.jsonText_ = text;
             return View(m);
         }
     }

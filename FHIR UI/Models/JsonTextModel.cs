@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 namespace FHIR_UI.Models
 {
     /// <summary>
-    /// Contains text of JSON resource
+    /// Contains text of JSON Resource
     /// </summary>
     public class JsonTextModel
     {
-        public String JsonText_ { get; set; }
+        public String jsonText_ { get; set; }
     }
 }
