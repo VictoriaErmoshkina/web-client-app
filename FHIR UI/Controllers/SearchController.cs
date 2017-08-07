@@ -23,27 +23,35 @@ namespace FHIR_UI.Controllers
         {
             ResourceRepository repo = new ResourceRepository(url);
             SearchResultModel resultModel = new SearchResultModel();
+            resultModel.Type = type;
             resultModel.ResourceResultList = repo.GetIds(resultModel.Type);
+
+            
+            resultModel._amount = resultModel.ResourceResultList.Count();
+            resultModel.pagesAmount = (int)Math.Ceiling((double)resultModel._amount / amountOnPage);
+            resultModel.currentPage = page;
+            if (resultModel._amount >0)
+                resultModel.getResultOnPage(amountOnPage, resultModel.currentPage);
+
             ResourceTypesModel resTypes = new ResourceTypesModel();
             CommonViewModel m = new CommonViewModel(resTypes, resultModel); 
             return View(m);
         }
 
         [HttpPost]
-        public IActionResult Index(SearchResultModel resultModel)
+        public IActionResult Index(CommonViewModel m)
         {
-            if (resultModel.currentPage == 0) { resultModel.currentPage = 1; };
+            if (m.SearchRes.currentPage == 0) { m.SearchRes.currentPage = 1; };
             if (ModelState.IsValid)
             {
                 ResourceRepository rep = new ResourceRepository(url);
-                resultModel.ResourceResultList = rep.GetIds(resultModel.Type);
-                resultModel._amount = resultModel.ResourceResultList.Count();
-                resultModel.pagesAmount = (int)Math.Ceiling((double)resultModel._amount/amountOnPage );
-                resultModel.getResultOnPage( amountOnPage, resultModel.currentPage);
+                m.SearchRes.ResourceResultList = rep.GetIds(m.SearchRes.Type);
+                m.SearchRes._amount = m.SearchRes.ResourceResultList.Count();
+                m.SearchRes.pagesAmount = (int)Math.Ceiling((double)m.SearchRes._amount/amountOnPage );
+                m.SearchRes.getResultOnPage( amountOnPage, m.SearchRes.currentPage);
             }
 
-            ResourceTypesModel resTypes = new ResourceTypesModel();
-            CommonViewModel m = new CommonViewModel(resTypes, resultModel);
+           
 
             return View(m);
         }

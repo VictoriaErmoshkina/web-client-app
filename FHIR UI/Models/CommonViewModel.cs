@@ -15,5 +15,10 @@ namespace FHIR_UI.Models
             Types = r;
             SearchRes = s;
         }
+
+        public CommonViewModel()
+        {
+    
+        }
     }
 }
