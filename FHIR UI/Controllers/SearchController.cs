@@ -7,6 +7,8 @@ using FHIR_UI.Models;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Rest;
 using Hl7.Fhir.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace FHIR_UI.Controllers
@@ -59,6 +61,7 @@ namespace FHIR_UI.Controllers
         public IActionResult Read (string type, string id, string version = null)
         {          
             FhirClient client = new FhirClient(url);
+           
             String text = FhirSerializer.SerializeResourceToJson(client.Get(ResourceIdentity.Build(type, id, version)));
             JsonTextModel m = new JsonTextModel();
             m.jsonText_ = text;
@@ -73,6 +76,48 @@ namespace FHIR_UI.Controllers
             JsonTextModel m = new JsonTextModel();
             m.jsonText_ = text;
             return View(m);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var json = @"{
+                'resourceType': 'Patient',
+                'name': [
+                    {
+                    'family': 'Patient',
+                    'given': [
+                         'Automation'
+                    ],
+                    'suffix': [
+                        'Number'
+                    ]
+                 }
+                ],
+                'birthDate': '2017-08-08',
+          }
+
+                ]
+                }";
+            var parser = new FhirJsonParser();
+            String s = "ok;";
+            try
+            {
+               var res = parser.Parse<Resource>(json);
+                s += "parsed ^_^";
+
+                FhirClient client = new FhirClient(url);
+               var resEntry= client.Create(res);
+                s += " cteated ^_^";
+                var test = resEntry.Id;
+                s += "id: "+test;
+            }
+            catch (Exception e)
+            {
+                 s += " ЖОПАЖОПАЖОПА error of parcing"+ e.Message;
+            }
+
+            return View(s);
         }
     }
 }

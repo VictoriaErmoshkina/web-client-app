@@ -42,6 +42,9 @@ namespace FHIR_UI.Models
             var firstIndex = amountOnPage * (currentPageNumb_ - 1);
             totalResult_.CopyTo(firstIndex, resultOnPage_, 0, currentAmountOfItems_);
         }
+
+
+       
     }
 
 
