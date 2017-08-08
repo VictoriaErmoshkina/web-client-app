@@ -21,12 +21,14 @@ namespace FHIR_UI.Controllers
 
 
         [HttpGet]
-        public IActionResult Index(String type = null, int page = 1)
+        public IActionResult Index(String type = null, int page = 1, string[] q = null)
         {
+           q = new string[1];
+           q[0] = "birthdate=2017-08-08";
             ResourceRepository repo = new ResourceRepository(url);
             SearchResultModel resultModel = new SearchResultModel();
             resultModel.typeOfResource_ = type;
-            resultModel.totalResult_ = repo.FilteredGetIds(resultModel.typeOfResource_);
+            resultModel.totalResult_ = repo.FilteredGetIds(resultModel.typeOfResource_, page, q);
                         
             resultModel.totalAmountOfItems_ = resultModel.totalResult_.Count();
             resultModel.pagesAmount_ = (int)Math.Ceiling((double)resultModel.totalAmountOfItems_ / amountOnPage);
@@ -78,24 +80,78 @@ namespace FHIR_UI.Controllers
             return View(m);
         }
 
-        [HttpGet]
-        public IActionResult Create()
+        public IActionResult Update(String json)
         {
-            var json = @"{
-                'resourceType': 'Patient',
-                'name': [
-                    {
-                    'family': 'Patient',
-                    'given': [
-                         'Automation'
-                    ],
-                    'suffix': [
-                        'Number'
-                    ]
-                 }
-                ],
-                'birthDate': '2017-08-08',
-          }
+            json = @"{ 'resourceType': 'Patient',
+                      'id': '203452',
+                       'meta': {
+                         'versionId': '1',
+                         'lastUpdated': '2017-08-08T07:46:49.406-04:00'
+                       },
+                       'text': {
+                         'status': 'generated',
+                         'div': '<div xmlns=\'http://www.w3.org/1999/xhtml\'><div class=\'hapiHeaderText\'>Automation <b>PATIENT </b> Number</div><table class=\'hapiPropertyTable\'><tbody><tr><td>Date of birth</td><td><span>08 August 2017</span></td></tr></tbody></table></div>'
+                       },
+                       'name': [
+                         {
+                           'family': 'Patient',
+                           'given': [
+                             'Automation'
+                           ],
+                           'suffix': [
+                             'Number'
+                           ]
+                         }
+                       ],
+                       'birthDate': '2017-08-08',
+                       'gender': 'male',
+                    } ";
+            var parser = new FhirJsonParser();
+            String s = "ok";
+            try
+            {
+                var res = parser.Parse<Resource>(json);
+                s += "parsed ^_^";
+
+                FhirClient client = new FhirClient(url);
+                var resEntry = client.Update(res);
+                s += " updated ^_^";
+                var resId = resEntry.Id;
+                var resVersion = resEntry.Meta.VersionId;
+                s += "id: " + resId+" version: "+resVersion;
+            }
+            catch (Exception e)
+            {
+                s += " ЖОПАЖОПАЖОПА error of parcing" + e.Message;
+            }
+            return View();
+
+        }
+
+        /// <summary>
+        /// создает ресурс
+        /// </summary>
+        /// <param name="json">представление ресурса</param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult Create(String json)
+        {
+            json = @"{
+                        'resourceType': 'Patient',
+                        'name': 
+                         [
+                            {
+                            'family': 'Patient',
+                            'given': [
+                                    'Automation'
+                                     ],
+                            'suffix': [
+                                     'Number'
+                                      ]
+                            }
+                          ],
+                        'birthDate': '2017-08-08',
+                        }
 
                 ]
                 }";
@@ -108,16 +164,16 @@ namespace FHIR_UI.Controllers
 
                 FhirClient client = new FhirClient(url);
                var resEntry= client.Create(res);
-                s += " cteated ^_^";
-                var test = resEntry.Id;
-                s += "id: "+test;
+                s += " created ^_^";
+                var resId = resEntry.Id;
+                s += "id: "+resId;
             }
             catch (Exception e)
             {
                  s += " ЖОПАЖОПАЖОПА error of parcing"+ e.Message;
             }
 
-            return View(s);
+            return View();
         }
     }
 }
