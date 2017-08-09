@@ -1,0 +1,79 @@
+﻿@using FHIR_UI.Models
+@model FHIR_UI.Models.CommonViewModel
+@{
+    ViewData["Title"] = "Search";
+}
+<html>
+<head>
+    <title>Заголовок</title>
+</head>
+<body>
+   <div class="panel">
+       <div class=" = panel-heading">
+           <h3> Просмотр списка ресурсов </h3>
+       </div>
+      
+           <div class="panel-body">
+               <center>
+                   <table width="1000px">
+                       <tr height="500px">
+                           <td bgcolor="#EFEEFF" width="20px" valign="top">
+                               @foreach (var v in Model.TypesModel_.TypesAsArray_)
+                               {
+                                   <p> <a href="Search?type=@v.ToString()"> *@v.ToString() </a> </p>
+                               }
+                           </td>
+                           <td bgcolor="#F8FEFE" valign="top">
+                               
+                                   if (Model.SearchModel_.TypeOfResource_ != null)
+                                   {
+                                    @using (Html.BeginForm())
+                                    {
+                                        <div>
+                                            <form action="~/search" method="post">
+                                                <fieldset>
+                                                    @Html.DropDownListFor(m => m.SearchModel_.PagingIndx_, new SelectList(@Model.Paging_), "Select action")
+                                                    @Html.HiddenFor(m => m.SearchModel_.Bundle_)
+                                                    @Html.HiddenFor(m => m.SearchModel_.TypeOfResource_)
+                                                </fieldset>
+                                                <input type="submit" value="Show" />
+                                            </form>
+                                        </div>
+                                    }
+                                    <h4> type @Model.SearchModel_.TypeOfResource_ </h4>
+                                    <p> Found @Model.SearchModel_.TotalAmountOfItems_ items</p>
+                                    <table border="1">
+                                        <tr>
+                                            <th> ID </th>
+                                            <th> Action </th>
+                                        </tr>
+                                        @foreach (var r in Model.SearchModel_.ResultForPage_)
+                                        {
+                                            <tr>
+                                                <th> <p> @r </p> </th>
+                                                <th>
+                                                    <a href="Search/Read?type=@Model.SearchModel_.TypeOfResource_&id=@r"> Read </a>
+                                                    <a href="Search/Edit?type=@Model.SearchModel_.TypeOfResource_&id=@r"> Edit </a>
+                                                </th>
+                                            </tr>
+                                        }
+                                    </table>
+                                   }
+                                   else
+                                   {
+                                    <p> Type is not set </p>
+                                   }
+
+                               
+                           </td>
+                       </tr>
+                   </table>
+               </center>
+           </div>
+       <div class="panel-footer">
+          <p>:)</p>
+       </div>
+      
+   </div>
+</body>
+</html>

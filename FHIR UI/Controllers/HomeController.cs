@@ -4,17 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FHIR_UI.Models;
+using Hl7.Fhir.Serialization;
+using Hl7.Fhir.Rest;
+using Hl7.Fhir.Model;
 
 namespace FHIR_UI.Controllers
 {
     public class HomeController : Controller
     {
         public String url = "https://fhirtest.uhn.ca/baseDstu3";
+
         public IActionResult Index()
         {
-            
-            return View();
+            ResourceTypesModel res = new ResourceTypesModel();
+            return View(res);
         }
+
+       
+
 
         public IActionResult About()
         {

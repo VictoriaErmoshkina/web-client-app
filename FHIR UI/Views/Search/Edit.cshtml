@@ -6,13 +6,21 @@
 <h2>JSON file</h2>
 
 <body>
-    <div>
-        @{
-            <form action="textarea1.php" method="post">
-                <p><b>Edit JSON file here:</b></p>
-                <textarea rows="30" cols="100">@Model.jsonText_</textarea>
-                <p><input type="submit" value="Save"></p>
-            </form>
+    <div class="panel" >
+        <div class="panel-heading">
+            <h3> Редактирование ресурса </h3>
+        </div>
+        
+        @using (Html.BeginForm()) {
+            <div class="panel-body">
+                @Html.HiddenFor(m => m.ResId_)
+                @Html.HiddenFor(m => m.ResType_)
+                @Html.TextAreaFor(m=>m.JsonText_, 30, 150, new {@class="form-control"})
+            </div>
+            <div class="panel-footer">
+                <input type="submit" value="Update" class="btn btn-primary" />
+                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+            </div>
         }
     </div>
 </body>

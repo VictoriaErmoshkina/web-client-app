@@ -9,6 +9,7 @@ using Hl7.Fhir.Rest;
 using Hl7.Fhir.Serialization;
 using System.IO;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace FHIR_UI.Controllers
@@ -21,159 +22,150 @@ namespace FHIR_UI.Controllers
 
 
         [HttpGet]
-        public IActionResult Index(String type = null, int page = 1, string[] q = null)
+        public IActionResult Index(String type = null, int page = 1)
         {
-           q = new string[1];
-           q[0] = "birthdate=2017-08-08";
-            ResourceRepository repo = new ResourceRepository(url);
-            SearchResultModel resultModel = new SearchResultModel();
-            resultModel.typeOfResource_ = type;
-            resultModel.totalResult_ = repo.FilteredGetIds(resultModel.typeOfResource_, page, q);
-                        
-            resultModel.totalAmountOfItems_ = resultModel.totalResult_.Count();
-            resultModel.pagesAmount_ = (int)Math.Ceiling((double)resultModel.totalAmountOfItems_ / amountOnPage);
-            resultModel.currentPageNumb_ = page;
-            if (resultModel.totalAmountOfItems_ >0)
-                resultModel.SetResultOnPage(amountOnPage, resultModel.currentPageNumb_);
+            //ResourceRepository repo = new ResourceRepository(url);
+            SearchResultModel resultModel = new SearchResultModel(new ResourceRepository(url));
+            resultModel.TypeOfResource_ = type;
+            // resultModel.TotalResult_ = repo.FilteredGetIds(resultModel.TypeOfResource_, page);
+            resultModel.Bundle_ = resultModel.repository_.getBunde(type);
+            
+            resultModel.TotalAmountOfItems_ = resultModel.Bundle_.Entry.Count();
+          //  resultModel.PagesAmount_ = (int)Math.Ceiling((double)resultModel.TotalAmountOfItems_ / amountOnPage);
+            resultModel.CurrentPageNumb_ = page;
+            if (resultModel.TotalAmountOfItems_ > 0)
+                
+                resultModel.SetResultOnPage(amountOnPage, true);
 
-            ResourceTypesModel resTypes = new ResourceTypesModel();
-            CommonViewModel m = new CommonViewModel(resTypes, resultModel); 
-            return View(m);
+            //  ResourceTypesModel resTypes = new ResourceTypesModel();
+            //  CommonViewModel m = new CommonViewModel(resTypes, resultModel); 
+
+            ViewBag.Bundle_ = resultModel.Bundle_;
+            resultModel.list.Add(resultModel.Bundle_);
+            return View(resultModel);
         }
 
+
+        /// <summary>
+        /// я не могу проверить листание страниц т.к хз как сохранить Bundle
+        /// но без представления просто все работало
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         [HttpPost]
-        public IActionResult Index(CommonViewModel m)
+        public IActionResult Index(SearchResultModel m)
         {
-            if (m.searchModel_.currentPageNumb_ == 0) { m.searchModel_.currentPageNumb_ = 1; };
+            //if (m.SearchModel_.CurrentPageNumb_ == 0) { m.SearchModel_.CurrentPageNumb_ = 1; };
             if (ModelState.IsValid)
             {
+                
                 ResourceRepository rep = new ResourceRepository(url);
-                m.searchModel_.totalResult_ = rep.FilteredGetIds(m.searchModel_.typeOfResource_);
-                m.searchModel_.totalAmountOfItems_ = m.searchModel_.totalResult_.Count();
-                m.searchModel_.pagesAmount_ = (int)Math.Ceiling((double)m.searchModel_.totalAmountOfItems_/amountOnPage );
-                m.searchModel_.SetResultOnPage( amountOnPage, m.searchModel_.currentPageNumb_);
+                m.Bundle_ = rep.getBunde(m.TypeOfResource_);
+               // m.TotalAmountOfItems_ = m.Bundle_.Entry.Count();
+             //   m.PagesAmount_ = (int)Math.Ceiling((double)m.TotalAmountOfItems_ /amountOnPage );
+
+                m.SetResultOnPage( amountOnPage);
             }
 
-           
+            //  ResourceTypesModel resTypes = new ResourceTypesModel();
+            // CommonViewModel common = new CommonViewModel(resTypes, resultModel);
+
+            ViewBag.Bundle_ = m.Bundle_;
 
             return View(m);
         }
 
+        /// <summary>
+        /// чтение работает правильно
+        /// </summary>
+        /// <param name="type">тип ресурса</param>
+        /// <param name="id">ид ресурса</param>
+        /// <param name="version">версия ресурса </param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Read (string type, string id, string version = null)
         {          
-            FhirClient client = new FhirClient(url);
-           
+            FhirClient client = new FhirClient(url);           
             String text = FhirSerializer.SerializeResourceToJson(client.Get(ResourceIdentity.Build(type, id, version)));
-            JsonTextModel m = new JsonTextModel();
-            m.jsonText_ = text;
+            JsonTextModel m = new JsonTextModel(type,id, version, text);          
+            m.Status_ = JsonTextModel.READING;
             return View(m);
         }
 
+
+        /// <summary>
+        /// редактор ресурса работает, все ок. 
+        /// Единственное надо бы как-то сделать вывод текста не одной строкой, а разбить на абзацы
+        /// </summary>
+        /// <param name="type">тип ресурса</param>
+        /// <param name="id">ид ресурса</param>
+        /// <param name="version">версия ресурса</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Edit(string type, string id, string version = null)
         {
             FhirClient client = new FhirClient(url);
             String text = FhirSerializer.SerializeResourceToJson(client.Get(ResourceIdentity.Build(type, id, version)));
-            JsonTextModel m = new JsonTextModel();
-            m.jsonText_ = text;
+            JsonTextModel m = new JsonTextModel(type, id, version, text);
+            m.Status_ = JsonTextModel.UPDATING;
             return View(m);
         }
 
-        public IActionResult Update(String json)
+        /// <summary>
+        /// редактирует ресурс 
+        /// </summary>
+        /// <param name="json">представление ресурса</param>
+        /// <returns></returns
+        [HttpPost]
+        public IActionResult Edit(JsonTextModel json)
         {
-            json = @"{ 'resourceType': 'Patient',
-                      'id': '203452',
-                       'meta': {
-                         'versionId': '1',
-                         'lastUpdated': '2017-08-08T07:46:49.406-04:00'
-                       },
-                       'text': {
-                         'status': 'generated',
-                         'div': '<div xmlns=\'http://www.w3.org/1999/xhtml\'><div class=\'hapiHeaderText\'>Automation <b>PATIENT </b> Number</div><table class=\'hapiPropertyTable\'><tbody><tr><td>Date of birth</td><td><span>08 August 2017</span></td></tr></tbody></table></div>'
-                       },
-                       'name': [
-                         {
-                           'family': 'Patient',
-                           'given': [
-                             'Automation'
-                           ],
-                           'suffix': [
-                             'Number'
-                           ]
-                         }
-                       ],
-                       'birthDate': '2017-08-08',
-                       'gender': 'male',
-                    } ";
+            if (string.IsNullOrWhiteSpace(json.JsonText_))
+                return View(json);
             var parser = new FhirJsonParser();
-            String s = "ok";
             try
             {
-                var res = parser.Parse<Resource>(json);
-                s += "parsed ^_^";
-
+                var res = parser.Parse<Resource>(json.JsonText_);
                 FhirClient client = new FhirClient(url);
                 var resEntry = client.Update(res);
-                s += " updated ^_^";
-                var resId = resEntry.Id;
-                var resVersion = resEntry.Meta.VersionId;
-                s += "id: " + resId+" version: "+resVersion;
+                json.Status_ = JsonTextModel.UPDATED;
             }
+           
             catch (Exception e)
             {
-                s += " ЖОПАЖОПАЖОПА error of parcing" + e.Message;
+                json.Status_ = JsonTextModel.FAILED;
+                return View(json);
             }
-            return View();
+            return View(json);
 
         }
 
+        private IActionResult View(JsonTextModel json, Exception e)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
-        /// создает ресурс
+        /// создает ресурс (проверяла без view -- все ок )
         /// </summary>
         /// <param name="json">представление ресурса</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Create(String json)
+        public IActionResult Create(JsonTextModel json)
         {
-            json = @"{
-                        'resourceType': 'Patient',
-                        'name': 
-                         [
-                            {
-                            'family': 'Patient',
-                            'given': [
-                                    'Automation'
-                                     ],
-                            'suffix': [
-                                     'Number'
-                                      ]
-                            }
-                          ],
-                        'birthDate': '2017-08-08',
-                        }
-
-                ]
-                }";
             var parser = new FhirJsonParser();
-            String s = "ok;";
             try
             {
-               var res = parser.Parse<Resource>(json);
-                s += "parsed ^_^";
-
-                FhirClient client = new FhirClient(url);
+               var res = parser.Parse<Resource>(json.JsonText_);
+               FhirClient client = new FhirClient(url);
                var resEntry= client.Create(res);
-                s += " created ^_^";
-                var resId = resEntry.Id;
-                s += "id: "+resId;
+               json.Status_ = JsonTextModel.CREATED;
             }
             catch (Exception e)
             {
-                 s += " ЖОПАЖОПАЖОПА error of parcing"+ e.Message;
+                json.Status_ = JsonTextModel.FAILED;
+                return View(json);
             }
-
-            return View();
+            return View(json);
         }
     }
 }

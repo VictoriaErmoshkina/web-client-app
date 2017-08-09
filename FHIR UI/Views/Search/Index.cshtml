@@ -1,60 +1,77 @@
 ﻿@using FHIR_UI.Models
-@model FHIR_UI.Models.CommonViewModel
+
+@model FHIR_UI.Models.SearchResultModel
 @{
     ViewData["Title"] = "Search";
 }
 <html>
 <head>
-    <title>тестик</title>
+    <title>Заголовок</title>
 </head>
 <body>
-    <h2>Search</h2>
-    <center>
-        <table width="1000px">
-            <tr height="500px">
-                <td bgcolor="#EFEEFF" width="20px" valign="top">
-                    @foreach (var v in Model.typesModel_.typesAsArray_)
-                    {
-                        <p> <a href="Search?type=@v.ToString()"> *@v.ToString() </a> </p>
-                    }
-                </td>
-                <td bgcolor="#F8FEFE" valign="top">
-                    <form action="~/search" method="get">
-                        @for (int i = 0; i < Model.searchModel_.pagesAmount_; ++i)
-                        {
-                            <a href="Search?type=@Model.searchModel_.typeOfResource_&page=@(i + 1)">@(i + 1) </a>
-                        }
-                    </form>
-                    @{
-                        if (Model.searchModel_.typeOfResource_ != null)
-                        {
-                            <h2> type @Model.searchModel_.typeOfResource_ </h2>
-                            <p> Found @Model.searchModel_.totalAmountOfItems_ items</p>
-                            <table border="1">
-                                <tr>
-                                    <th> ID </th>
-                                    <th> Action </th>
-                                </tr>
-                                @foreach (String r in Model.searchModel_.resultOnPage_)
+    <div class="panel">
+        <div class=" = panel-heading">
+            <h3> Просмотр списка ресурсов </h3>
+        </div>
+        <div class="panel-body">
+            <center>
+                <table width="1000px">
+                    <tr height="500px">
+                        <td bgcolor="#F8FEFE" valign="top">
+                            @if (Model.TypeOfResource_ != null)
+                            {
+                                @using (Html.BeginForm())
                                 {
-                                    <tr>
-                                        <th> <p> @r </p> </th>
-                                        <th>
-                                            <a href="Search/Read?type=@Model.searchModel_.typeOfResource_&id=@r"> Read </a>
-                                            <a href="Search/Edit?type=@Model.searchModel_.typeOfResource_&id=@r"> Edit </a>
-                                        </th>
-                                    </tr>
+                                    <div>
+                                        @*  как сохранить Bundle_ ???? вариант ниже не работает >_< *@
+                                        @Html.Hidden("Bundle_", Model.Bundle_)
+                                        @Html.HiddenFor(m => m.list)
+                                        @Html.DropDownListFor(m => m.PagingIndx_, new SelectList(@Model.Paging_), "Select action")
+                                        @Html.HiddenFor(m => m.TypeOfResource_)
+                                    </div>
+                                    <div>
+                                        <input type="submit" value="Show page" class="btn btn-primary" />
+                                    </div>
                                 }
-                            </table>
-                        }
-                        else
-                        {
-                            <p> Type is not set </p>
-                        }
-                    }
-                </td>
-            </tr>
-        </table>
-    </center>
+                                <h4> type @Model.TypeOfResource_ </h4>
+                                <p> Found @Model.TotalAmountOfItems_ items</p>
+                                <table border="1">
+                                    <tr>
+                                        <th> ID </th>
+                                        <th> Action </th>
+                                    </tr>
+                                    @foreach (var r in Model.ResultForPage_)
+                                    {
+                                        <tr>
+                                            <th> <p> @r </p> </th>
+                                            <th>
+                                                <a href="Search/Read?type=@Model.TypeOfResource_&id=@r"> Read </a>
+                                                <a href="Search/Edit?type=@Model.TypeOfResource_&id=@r"> Edit </a>
+                                            </th>
+                                        </tr>
+                                    }
+                                </table>
+                            }
+                            else
+                            {
+                                <p> Type is not set </p>
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </center>
+        </div>
+        <div class="panel-footer">
+            @Html.ActionLink("Back", "Index", "Home", new { @class = "btn btn-default" })
+        </div>
+
+    </div>
+
+    <div>
+        @{ 
+            //var grid = new WebGrid(Model.ResultForPage_);
+        }
+   @*//     @grid.GetHtml()*@
+    </div>
 </body>
 </html>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hl7.Fhir.Rest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,18 +14,20 @@ namespace FHIR_UI.Models
     //TODO: нужно передать ResourceTypesModel в LayOut_
     public class CommonViewModel
     {
-        public ResourceTypesModel typesModel_ { get; set; }
-        public SearchResultModel searchModel_ { get; set; }
+        public readonly Array Paging_= Enum.GetValues(typeof(PageDirection));
+        public ResourceTypesModel TypesModel_ { get; set; }
+        public SearchResultModel SearchModel_ { get; set; }
 
        public CommonViewModel (ResourceTypesModel rtm, SearchResultModel srm)
         {
-            typesModel_ = rtm;
-            searchModel_ = srm;
+            Paging_ = Enum.GetValues(typeof(PageDirection));
+            TypesModel_ = rtm;
+            SearchModel_ = srm;
         }
 
         public CommonViewModel()
         {
-    
+            Paging_ = Enum.GetValues(typeof(PageDirection));
         }
     }
 }

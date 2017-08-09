@@ -40,7 +40,7 @@ namespace FHIR_UI.Models
             List<String> result = new List<String>();
             if (string.IsNullOrWhiteSpace(type))
                 return result;
-            var bundle = _client.Search(type, q, includes, pageSize, summary );
+            var bundle = _client.Search(type );
             while (bundle != null)
             {
                 foreach (var entry in bundle.Entry)
@@ -51,5 +51,33 @@ namespace FHIR_UI.Models
             }
             return result;
         }
+
+        public Bundle getBunde (string type)
+        {
+            Bundle result = new Bundle();
+
+            if (string.IsNullOrWhiteSpace(type))
+                return result;
+
+            _client.PreferredFormat = ResourceFormat.Json;
+
+            result = _client.Search(type, pageSize: 60);
+           var  res = _client.Continue(result);
+            return result;
+
+        }
+
+        public Bundle redirect(Bundle current, PageDirection direction)
+        {
+            try
+            {
+                var res = _client.Continue(current, direction);
+            }catch (Exception ex)
+            {
+                throw new Exception("action is invalid" );
+            }
+            return current;
+        }
+
     }    
 }

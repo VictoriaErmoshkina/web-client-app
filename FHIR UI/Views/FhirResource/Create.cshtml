@@ -1,0 +1,28 @@
+﻿﻿@using FHIR_UI.Models
+@model FHIR_UI.Models.JsonTextModel
+@{
+    ViewData["Title"] = "Json";
+}
+<h2>JSON file</h2>
+
+<body>
+    <div class="panel">
+        <div class="panel-heading">
+            <h3> Создание ресурса </h3>
+        </div>
+        <p>
+            @Html.DisplayNameFor(m => m.Status_);
+            @Html.DisplayFor(m => m.Status_);
+        </p>
+        @using (Html.BeginForm())
+            {
+            <div class="panel-body">
+                @Html.TextAreaFor(m => m.JsonText_, 30, 150, new { @class = "form-control" })
+            </div>
+            <div class="panel-footer">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                @Html.ActionLink("Cancel", "Index", "Home", new { @class = "btn btn-default" })
+            </div>
+        }
+    </div>
+</body>
