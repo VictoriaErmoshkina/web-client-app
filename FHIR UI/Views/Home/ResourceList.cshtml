@@ -1,0 +1,12 @@
+﻿@model FHIR_UI.Models.ResourceTypesModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="list-group">
+    @foreach (var v in Model.TypesAsArray_)
+            {
+        <a href="Search?type=@v.ToString()" class="list-group-item">@v.ToString()</a>
+    }
+</div>

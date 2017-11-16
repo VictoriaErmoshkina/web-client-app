@@ -1,5 +1,4 @@
 ﻿@using FHIR_UI.Models
-
 @model FHIR_UI.Models.SearchResultModel
 @{
     ViewData["Title"] = "Search";
@@ -9,69 +8,65 @@
     <title>Заголовок</title>
 </head>
 <body>
-    <div class="panel">
-        <div class=" = panel-heading">
+    <div class="panel panel-default">
+        <div class="panel-heading">
             <h3> Просмотр списка ресурсов </h3>
         </div>
-        <div class="panel-body">
-            <center>
-                <table width="1000px">
-                    <tr height="500px">
-                        <td bgcolor="#F8FEFE" valign="top">
-                            @if (Model.TypeOfResource_ != null)
-                            {
-                                @using (Html.BeginForm())
-                                {
-                                    <div>
-                                        @*  как сохранить Bundle_ ???? вариант ниже не работает >_< *@
-                                        @Html.Hidden("Bundle_", Model.Bundle_)
-                                        @Html.HiddenFor(m => m.list)
-                                        @Html.DropDownListFor(m => m.PagingIndx_, new SelectList(@Model.Paging_), "Select action")
-                                        @Html.HiddenFor(m => m.TypeOfResource_)
-                                    </div>
-                                    <div>
-                                        <input type="submit" value="Show page" class="btn btn-primary" />
-                                    </div>
-                                }
-                                <h4> type @Model.TypeOfResource_ </h4>
-                                <p> Found @Model.TotalAmountOfItems_ items</p>
-                                <table border="1">
-                                    <tr>
-                                        <th> ID </th>
-                                        <th> Action </th>
-                                    </tr>
-                                    @foreach (var r in Model.ResultForPage_)
-                                    {
-                                        <tr>
-                                            <th> <p> @r </p> </th>
-                                            <th>
-                                                <a href="Search/Read?type=@Model.TypeOfResource_&id=@r"> Read </a>
-                                                <a href="Search/Edit?type=@Model.TypeOfResource_&id=@r"> Edit </a>
-                                            </th>
-                                        </tr>
-                                    }
-                                </table>
-                            }
-                            else
-                            {
-                                <p> Type is not set </p>
-                            }
+
+        @if (Model.TypeOfResource_ != null)
+            { <div class="panel-body">
+            @using (Html.BeginForm())
+                {
+                <div>
+                    @*  как сохранить Bundle_ ???? вариант ниже не работает >_< *@
+                    @Html.Hidden("Bundle_", Model.Bundle_)
+                    @Html.HiddenFor(m => m.list)
+                    @Html.DropDownListFor(m => m.PagingIndx_, new SelectList(@Model.Paging_), "Select action")
+                    @Html.HiddenFor(m => m.TypeOfResource_)
+                </div>
+                    <div>
+                        <input type="submit" value="Show page" class="btn btn-primary" />
+                    </div>
+            }
+            <h4> type @Model.TypeOfResource_ </h4>
+            <p> Found @Model.TotalAmountOfItems_ items</p>
+
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.ResultForPage_)
+                {
+                    <tr>
+                        <td> <p> @r </p> </td>
+                        <td>
+                            <a href="Search/Read?type=@Model.TypeOfResource_&id=@r" class="btn btn-primary btn-sm" role="button"> Read </a>
+                            <a href="Search/Edit?type=@Model.TypeOfResource_&id=@r" class="btn btn-primary btn-sm" role="button"> Edit </a>
                         </td>
                     </tr>
-                </table>
-            </center>
-        </div>
-        <div class="panel-footer">
-            @Html.ActionLink("Back", "Index", "Home", new { @class = "btn btn-default" })
-        </div>
-
-    </div>
-
-    <div>
-        @{ 
-            //var grid = new WebGrid(Model.ResultForPage_);
+                }
+            </tbody>
+        </table>
         }
-   @*//     @grid.GetHtml()*@
+        else
+        {
+            <p> Type is not set </p>
+        }
+
+        <div class="panel-footer">
+            <a href="../Home/Index" class="btn btn-primary btn-sm" role="button">Back</a>
+        </div>
+    </div>
+    <div>
+        @{
+//var grid = new WebGrid(Model.ResultForPage_);
+        }
+        @*//     @grid.GetHtml()*@
     </div>
 </body>
 </html>
