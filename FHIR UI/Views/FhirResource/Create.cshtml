@@ -11,8 +11,8 @@
     </div>
     @using (Html.BeginForm())
             {
-        <div class="panel-body">
-            @Html.TextAreaFor(m => m.JsonText_, 30, 150, new { @class = "form-control" })
+        <div class="panel-body input-group">
+            @Html.TextAreaFor(m => m.JsonText_, new { @class = "form-control", rows = 30, cols=1000, type = "text" })
         </div>
             <div class="panel-footer">
                 <input type="submit" value="Create" class="btn btn-primary" />

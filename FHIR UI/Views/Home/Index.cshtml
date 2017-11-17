@@ -6,8 +6,7 @@
 <div class="panel">
     <div class="panel-heading">
         <h3> Просмотр списка ресурсов </h3>
-        <a href="../FhirResource/Create" class="btn btn-primary btn-lg" role="button"
-           style="margin-bottom: 10px;">Создать новый ресурс</a>
+        @Html.ActionLink("Создать новый ресурс", "Create", "FhirResource", null, new { @class = "btn btn-primary btn-lg" })
     </div>
     <div class="panel-body row">
         <div id="resource-list" class="col-md-4">
