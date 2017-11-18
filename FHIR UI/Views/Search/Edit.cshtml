@@ -15,7 +15,7 @@
             <div class="panel-body input-group">
                 @Html.HiddenFor(m => m.ResId_)
                 @Html.HiddenFor(m => m.ResType_)
-                @Html.TextAreaFor(m=>m.JsonText_, new {@class="form-control", rows=30, cols=1000, type = "text" })
+                @Html.TextAreaFor(m=>m.JsonText_, new {@class="form-control", rows=15, cols=1000, type = "text" })
             </div>
             <div class="panel-footer">
                 <input type="submit" value="Update" class="btn btn-primary" />
